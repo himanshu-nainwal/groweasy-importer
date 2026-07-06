@@ -272,15 +272,15 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
               ref={importedParentRef}
               className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md"
             >
-              <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-auto">
+              <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-fixed">
                 <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase">
                   <tr>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328]">Lead Profile</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328]">Contact Phone</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328]">Location</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328]">CRM Assignment</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328]">Import Source</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328]">Mapping Notes</th>
+                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[22%]">Lead Profile</th>
+                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[15%]">Contact Phone</th>
+                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[13%]">Location</th>
+                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[18%]">CRM Assignment</th>
+                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[15%]">Import Source</th>
+                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[17%]">Mapping Notes</th>
                   </tr>
                 </thead>
                 <tbody
@@ -329,7 +329,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         }}
                       >
                         {/* Name and email */}
-                        <td className="px-6 py-2.5">
+                        <td className="px-6 py-2.5 w-[22%]">
                           <div className="flex flex-col">
                             <span className="font-semibold text-on-surface text-sm truncate max-w-xs">{lead.name || 'Anonymous Lead'}</span>
                             <span className="text-xs text-outline truncate max-w-xs">{lead.email || 'No email info'}</span>
@@ -337,7 +337,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         </td>
 
                         {/* Phone details */}
-                        <td className="px-6 py-2.5 font-mono text-xs">
+                        <td className="px-6 py-2.5 w-[15%] font-mono text-xs">
                           {lead.mobile_without_country_code ? (
                             <div className="flex items-center gap-1 text-on-surface">
                               <span className="text-outline">{lead.country_code || ''}</span>
@@ -349,7 +349,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         </td>
 
                         {/* Location */}
-                        <td className="px-6 py-2.5">
+                        <td className="px-6 py-2.5 w-[13%]">
                           {lead.city || lead.state || lead.country ? (
                             <div className="flex flex-col text-xs">
                               <span className="text-on-surface truncate max-w-[150px]">
@@ -365,7 +365,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         </td>
 
                         {/* CRM status and owner */}
-                        <td className="px-6 py-2.5">
+                        <td className="px-6 py-2.5 w-[18%]">
                           <div className="flex flex-col items-start gap-1">
                             <span className={`text-[10px] font-code-label font-bold border px-2 py-0.5 rounded-full ${statusBadgeClass}`}>
                               {statusLabel}
@@ -377,7 +377,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         </td>
 
                         {/* Data Source */}
-                        <td className="px-6 py-2.5">
+                        <td className="px-6 py-2.5 w-[15%]">
                           {lead.data_source ? (
                             <span className="text-xs font-code-label bg-surface-variant/45 border border-outline-variant/15 px-2 py-1 rounded text-primary">
                               {lead.data_source}
@@ -388,7 +388,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         </td>
 
                         {/* Note/Description */}
-                        <td className="px-6 py-2.5 text-xs max-w-xs truncate" title={lead.crm_note || lead.description}>
+                        <td className="px-6 py-2.5 w-[17%] text-xs max-w-xs truncate" title={lead.crm_note || lead.description}>
                           <span className="text-outline">{lead.crm_note || lead.description || ''}</span>
                         </td>
                       </tr>
@@ -410,7 +410,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
               ref={skippedParentRef}
               className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md"
             >
-              <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-auto">
+              <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-fixed">
                 <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-error font-semibold text-xs tracking-wider uppercase">
                   <tr>
                     <th className="px-6 py-3.5 w-16 text-center bg-[#0c1328]">Row</th>
@@ -448,12 +448,12 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                         }}
                       >
                         {/* Row Index */}
-                        <td className="px-6 py-3 text-center font-code-label text-outline">
+                        <td className="px-6 py-3 w-16 text-center font-code-label text-outline">
                           {virtualRow.index + 1}
                         </td>
 
                         {/* Skip Reason Badge */}
-                        <td className="px-6 py-3">
+                        <td className="px-6 py-3 w-72">
                           <div className="flex items-center gap-1.5 text-error font-medium">
                             <span className="material-symbols-outlined text-lg">warning</span>
                             <span className="text-sm truncate max-w-xs">{log.reason}</span>
