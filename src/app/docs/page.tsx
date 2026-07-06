@@ -17,7 +17,7 @@ export default function DocsPage() {
       <div className="max-w-7xl mx-auto px-6 pt-20">
         <div className="space-y-8">
           {/* Header */}
-          <div>
+          <div className="xl:-ml-12">
             <h1 className="font-bold text-4xl text-primary tracking-tight">Documentation</h1>
             <p className="text-on-surface-variant text-sm mt-2">
               Learn how our AI-powered lead ingestion engine works, the validation layer rules, and format schemas.
