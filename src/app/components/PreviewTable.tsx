@@ -12,6 +12,23 @@ interface PreviewTableProps {
 export default function PreviewTable({ headers, rows, totalCount }: PreviewTableProps) {
   const parentRef = useRef<HTMLDivElement>(null);
 
+  // 1. Calculate column widths dynamically based on largest text length in each column
+  const indexColWidth = Math.max(60, String(rows.length).length * 8.5 + 32);
+  const columnWidths = headers.map((header) => {
+    let maxLen = header.length;
+    rows.forEach((row) => {
+      const val = row[header];
+      if (val) {
+        maxLen = Math.max(maxLen, String(val).length);
+      }
+    });
+    // Scale length to pixels (e.g. 8px per character) plus padding
+    const pxWidth = maxLen * 8 + 48;
+    return Math.max(100, Math.min(380, pxWidth)); // Keep width between 100px and 380px
+  });
+
+  const totalWidth = indexColWidth + columnWidths.reduce((sum, w) => sum + w, 0);
+
   // Virtualizer for smooth rendering of rows
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
@@ -48,16 +65,22 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
       >
         <table
           className="border-collapse text-left text-sm text-on-surface-variant table-fixed"
-          style={{ width: `${48 + 180 * headers.length}px` }}
+          style={{ width: `${totalWidth}px` }}
         >
           {/* Sticky headers */}
           <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase">
             <tr>
-              <th className="px-4 py-3.5 text-center w-12 border-r border-outline-variant/10 bg-[#0c1328]">#</th>
-              {headers.map((header) => (
+              <th
+                className="px-4 py-3.5 text-center border-r border-outline-variant/10 bg-[#0c1328]"
+                style={{ width: `${indexColWidth}px` }}
+              >
+                #
+              </th>
+              {headers.map((header, i) => (
                 <th
                   key={header}
-                  className="px-6 py-3.5 font-semibold text-on-surface border-r border-outline-variant/10 whitespace-nowrap bg-[#0c1328] w-[180px]"
+                  className="px-6 py-3.5 font-semibold text-on-surface border-r border-outline-variant/10 whitespace-nowrap bg-[#0c1328]"
+                  style={{ width: `${columnWidths[i]}px` }}
                 >
                   {header}
                 </th>
@@ -93,14 +116,18 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
                   }}
                 >
                   {/* Row index number */}
-                  <td className="px-4 py-3 text-center font-code-label border-r border-outline-variant/10 text-outline border-b border-outline-variant/10 bg-[#060e20]/20 w-12">
+                  <td
+                    className="px-4 py-3 text-center font-code-label border-r border-outline-variant/10 text-outline border-b border-outline-variant/10 bg-[#060e20]/20"
+                    style={{ width: `${indexColWidth}px` }}
+                  >
                     {virtualRow.index + 1}
                   </td>
                   {/* Row cells */}
-                  {headers.map((header) => (
+                  {headers.map((header, i) => (
                     <td
                       key={header}
-                      className="px-6 py-3 border-r border-outline-variant/10 border-b border-outline-variant/10 w-[180px] truncate whitespace-nowrap"
+                      className="px-6 py-3 border-r border-outline-variant/10 border-b border-outline-variant/10 truncate whitespace-nowrap"
+                      style={{ width: `${columnWidths[i]}px` }}
                       title={row[header] || ''}
                     >
                       {row[header] || <span className="text-outline-variant/40 italic">empty</span>}

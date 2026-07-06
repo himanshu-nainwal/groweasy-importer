@@ -108,6 +108,62 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
   const totalLeads = imported.length + skipped.length;
   const accuracyRate = totalLeads > 0 ? ((imported.length / totalLeads) * 100).toFixed(1) : '0.0';
 
+  // 7. Calculate column widths dynamically for Imported Leads
+  const importedWidths = useMemo(() => {
+    if (filteredImported.length === 0) return [200, 150, 130, 180, 150, 200];
+
+    let maxProfile = 12; // "Lead Profile"
+    let maxPhone = 13;   // "Contact Phone"
+    let maxLoc = 8;      // "Location"
+    let maxAssign = 14;  // "CRM Assignment"
+    let maxSource = 13;  // "Import Source"
+    let maxNotes = 13;   // "Mapping Notes"
+
+    filteredImported.forEach((lead) => {
+      const nameLen = (lead.name || 'Anonymous Lead').length;
+      const emailLen = (lead.email || 'No email info').length;
+      maxProfile = Math.max(maxProfile, nameLen, emailLen);
+
+      const phoneStr = (lead.country_code || '') + (lead.mobile_without_country_code || '');
+      maxPhone = Math.max(maxPhone, phoneStr.length || 4);
+
+      const locStr = `${lead.city || ''}${lead.state || ''}${lead.country || ''}`;
+      maxLoc = Math.max(maxLoc, locStr.length || 11);
+
+      const ownerLen = lead.lead_owner ? `Owner: ${lead.lead_owner}`.length : 0;
+      maxAssign = Math.max(maxAssign, (lead.crm_status || 'NONE').length, ownerLen);
+
+      maxSource = Math.max(maxSource, (lead.data_source || 'Unknown').length);
+      maxNotes = Math.max(maxNotes, (lead.crm_note || lead.description || '').length);
+    });
+
+    const wProfile = Math.max(150, Math.min(300, maxProfile * 8 + 48));
+    const wPhone = Math.max(120, Math.min(200, maxPhone * 8 + 48));
+    const wLoc = Math.max(120, Math.min(220, maxLoc * 8 + 48));
+    const wAssign = Math.max(140, Math.min(220, maxAssign * 8 + 48));
+    const wSource = Math.max(130, Math.min(200, maxSource * 8 + 48));
+    const wNotes = Math.max(150, Math.min(380, maxNotes * 8 + 48));
+
+    return [wProfile, wPhone, wLoc, wAssign, wSource, wNotes];
+  }, [filteredImported]);
+
+  const totalImportedWidth = importedWidths.reduce((sum, w) => sum + w, 0);
+
+  // 8. Calculate column widths dynamically for Skipped Logs
+  const skippedWidths = useMemo(() => {
+    if (filteredSkipped.length === 0) return [64, 288];
+
+    let maxReason = 11; // "Skip Reason"
+    filteredSkipped.forEach((log) => {
+      maxReason = Math.max(maxReason, (log.reason || '').length);
+    });
+
+    const wRow = Math.max(64, String(filteredSkipped.length).length * 8 + 48);
+    const wReason = Math.max(160, Math.min(380, maxReason * 8 + 48));
+
+    return [wRow, wReason];
+  }, [filteredSkipped]);
+
   return (
     <div className="w-full space-y-8">
       {/* 1. Header and Quick Actions */}
@@ -273,22 +329,24 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
               className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md text-sm text-on-surface-variant"
             >
               {/* Header Row */}
-              <div className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase flex items-center min-w-[900px] h-12">
-                <div className="px-6 w-[22%] flex-shrink-0">Lead Profile</div>
-                <div className="px-6 w-[15%] flex-shrink-0">Contact Phone</div>
-                <div className="px-6 w-[13%] flex-shrink-0">Location</div>
-                <div className="px-6 w-[18%] flex-shrink-0">CRM Assignment</div>
-                <div className="px-6 w-[15%] flex-shrink-0">Import Source</div>
-                <div className="px-6 w-[17%] flex-shrink-0">Mapping Notes</div>
+              <div
+                className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase flex items-center h-12"
+                style={{ width: `${totalImportedWidth}px` }}
+              >
+                <div className="px-6 flex-shrink-0" style={{ width: `${importedWidths[0]}px` }}>Lead Profile</div>
+                <div className="px-6 flex-shrink-0" style={{ width: `${importedWidths[1]}px` }}>Contact Phone</div>
+                <div className="px-6 flex-shrink-0" style={{ width: `${importedWidths[2]}px` }}>Location</div>
+                <div className="px-6 flex-shrink-0" style={{ width: `${importedWidths[3]}px` }}>CRM Assignment</div>
+                <div className="px-6 flex-shrink-0" style={{ width: `${importedWidths[4]}px` }}>Import Source</div>
+                <div className="px-6 flex-shrink-0" style={{ width: `${importedWidths[5]}px` }}>Mapping Notes</div>
               </div>
 
               {/* Table Body */}
               <div
                 style={{
                   height: `${importedVirtualizer.getTotalSize()}px`,
-                  width: '100%',
+                  width: `${totalImportedWidth}px`,
                   position: 'relative',
-                  minWidth: '900px',
                 }}
               >
                 {importedVirtualizer.getVirtualItems().map((virtualRow) => {
@@ -329,7 +387,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       }}
                     >
                       {/* Name and email */}
-                      <div className="px-6 w-[22%] flex-shrink-0 truncate">
+                      <div className="px-6 flex-shrink-0 truncate" style={{ width: `${importedWidths[0]}px` }}>
                         <div className="flex flex-col truncate">
                           <span className="font-semibold text-on-surface text-sm truncate max-w-xs">{lead.name || 'Anonymous Lead'}</span>
                           <span className="text-xs text-outline truncate max-w-xs">{lead.email || 'No email info'}</span>
@@ -337,7 +395,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       </div>
 
                       {/* Phone details */}
-                      <div className="px-6 w-[15%] flex-shrink-0 font-mono text-xs truncate">
+                      <div className="px-6 flex-shrink-0 font-mono text-xs truncate" style={{ width: `${importedWidths[1]}px` }}>
                         {lead.mobile_without_country_code ? (
                           <div className="flex items-center gap-1 text-on-surface truncate">
                             <span className="text-outline">{lead.country_code || ''}</span>
@@ -349,7 +407,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       </div>
 
                       {/* Location */}
-                      <div className="px-6 w-[13%] flex-shrink-0 truncate">
+                      <div className="px-6 flex-shrink-0 truncate" style={{ width: `${importedWidths[2]}px` }}>
                         {lead.city || lead.state || lead.country ? (
                           <div className="flex flex-col text-xs truncate">
                             <span className="text-on-surface truncate max-w-[150px]">
@@ -365,7 +423,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       </div>
 
                       {/* CRM status and owner */}
-                      <div className="px-6 w-[18%] flex-shrink-0 truncate">
+                      <div className="px-6 flex-shrink-0 truncate" style={{ width: `${importedWidths[3]}px` }}>
                         <div className="flex flex-col items-start gap-1 truncate">
                           <span className={`text-[10px] font-code-label font-bold border px-2 py-0.5 rounded-full truncate ${statusBadgeClass}`}>
                             {statusLabel}
@@ -377,7 +435,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       </div>
 
                       {/* Data Source */}
-                      <div className="px-6 w-[15%] flex-shrink-0 truncate">
+                      <div className="px-6 flex-shrink-0 truncate" style={{ width: `${importedWidths[4]}px` }}>
                         {lead.data_source ? (
                           <span className="text-xs font-code-label bg-surface-variant/45 border border-outline-variant/15 px-2 py-1 rounded text-primary truncate">
                             {lead.data_source}
@@ -388,7 +446,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       </div>
 
                       {/* Note/Description */}
-                      <div className="px-6 w-[17%] flex-shrink-0 text-xs truncate" title={lead.crm_note || lead.description}>
+                      <div className="px-6 flex-shrink-0 text-xs truncate" style={{ width: `${importedWidths[5]}px` }} title={lead.crm_note || lead.description}>
                         <span className="text-outline truncate">{lead.crm_note || lead.description || ''}</span>
                       </div>
                     </div>
@@ -410,9 +468,9 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
               className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md text-sm text-on-surface-variant"
             >
               {/* Header Row */}
-              <div className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-error font-semibold text-xs tracking-wider uppercase flex items-center min-w-[700px] h-12">
-                <div className="px-6 w-16 text-center flex-shrink-0">Row</div>
-                <div className="px-6 w-72 flex-shrink-0">Skip Reason</div>
+              <div className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-error font-semibold text-xs tracking-wider uppercase flex items-center h-12 w-full">
+                <div className="px-6 flex-shrink-0" style={{ width: `${skippedWidths[0]}px` }}>Row</div>
+                <div className="px-6 flex-shrink-0" style={{ width: `${skippedWidths[1]}px` }}>Skip Reason</div>
                 <div className="px-6 flex-1 flex-shrink-0">Raw Record Details</div>
               </div>
 
@@ -422,7 +480,6 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                   height: `${skippedVirtualizer.getTotalSize()}px`,
                   width: '100%',
                   position: 'relative',
-                  minWidth: '700px',
                 }}
               >
                 {skippedVirtualizer.getVirtualItems().map((virtualRow) => {
@@ -447,12 +504,12 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
                       }}
                     >
                       {/* Row Index */}
-                      <div className="px-6 w-16 text-center font-code-label text-outline flex-shrink-0">
+                      <div className="px-6 flex-shrink-0 font-code-label text-outline" style={{ width: `${skippedWidths[0]}px` }}>
                         {virtualRow.index + 1}
                       </div>
 
                       {/* Skip Reason Badge */}
-                      <div className="px-6 w-72 flex-shrink-0 truncate">
+                      <div className="px-6 flex-shrink-0 truncate" style={{ width: `${skippedWidths[1]}px` }}>
                         <div className="flex items-center gap-1.5 text-error font-medium truncate">
                           <span className="material-symbols-outlined text-lg">warning</span>
                           <span className="text-sm truncate max-w-xs">{log.reason}</span>
