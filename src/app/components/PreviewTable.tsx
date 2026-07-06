@@ -46,7 +46,10 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
         ref={parentRef}
         className="w-full max-h-[420px] overflow-auto rounded-xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md"
       >
-        <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-auto">
+        <table
+          className="border-collapse text-left text-sm text-on-surface-variant table-fixed"
+          style={{ width: `${48 + 180 * headers.length}px` }}
+        >
           {/* Sticky headers */}
           <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase">
             <tr>
@@ -54,7 +57,7 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
               {headers.map((header) => (
                 <th
                   key={header}
-                  className="px-6 py-3.5 font-semibold text-on-surface border-r border-outline-variant/10 whitespace-nowrap bg-[#0c1328]"
+                  className="px-6 py-3.5 font-semibold text-on-surface border-r border-outline-variant/10 whitespace-nowrap bg-[#0c1328] w-[180px]"
                 >
                   {header}
                 </th>
@@ -90,14 +93,14 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
                   }}
                 >
                   {/* Row index number */}
-                  <td className="px-4 py-3 text-center font-code-label border-r border-outline-variant/10 text-outline border-b border-outline-variant/10 bg-[#060e20]/20">
+                  <td className="px-4 py-3 text-center font-code-label border-r border-outline-variant/10 text-outline border-b border-outline-variant/10 bg-[#060e20]/20 w-12">
                     {virtualRow.index + 1}
                   </td>
                   {/* Row cells */}
                   {headers.map((header) => (
                     <td
                       key={header}
-                      className="px-6 py-3 border-r border-outline-variant/10 border-b border-outline-variant/10 max-w-xs truncate whitespace-nowrap"
+                      className="px-6 py-3 border-r border-outline-variant/10 border-b border-outline-variant/10 w-[180px] truncate whitespace-nowrap"
                       title={row[header] || ''}
                     >
                       {row[header] || <span className="text-outline-variant/40 italic">empty</span>}
