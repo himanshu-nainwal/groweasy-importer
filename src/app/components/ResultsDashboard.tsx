@@ -270,132 +270,131 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
           ) : (
             <div
               ref={importedParentRef}
-              className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md"
+              className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md text-sm text-on-surface-variant"
             >
-              <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-fixed">
-                <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase">
-                  <tr>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[22%]">Lead Profile</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[15%]">Contact Phone</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[13%]">Location</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[18%]">CRM Assignment</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[15%]">Import Source</th>
-                    <th className="px-6 py-3.5 whitespace-nowrap bg-[#0c1328] w-[17%]">Mapping Notes</th>
-                  </tr>
-                </thead>
-                <tbody
-                  style={{
-                    height: `${importedVirtualizer.getTotalSize()}px`,
-                    width: '100%',
-                    position: 'relative',
-                  }}
-                >
-                  {importedVirtualizer.getVirtualItems().map((virtualRow) => {
-                    const lead = filteredImported[virtualRow.index];
-                    const isEven = virtualRow.index % 2 === 0;
+              {/* Header Row */}
+              <div className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase flex items-center min-w-[900px] h-12">
+                <div className="px-6 w-[22%] flex-shrink-0">Lead Profile</div>
+                <div className="px-6 w-[15%] flex-shrink-0">Contact Phone</div>
+                <div className="px-6 w-[13%] flex-shrink-0">Location</div>
+                <div className="px-6 w-[18%] flex-shrink-0">CRM Assignment</div>
+                <div className="px-6 w-[15%] flex-shrink-0">Import Source</div>
+                <div className="px-6 w-[17%] flex-shrink-0">Mapping Notes</div>
+              </div>
 
-                    let statusBadgeClass = 'bg-surface-variant/40 text-on-surface-variant border-outline-variant/30';
-                    let statusLabel = lead.crm_status || 'NONE';
-                    if (lead.crm_status === 'GOOD_LEAD_FOLLOW_UP') {
-                      statusBadgeClass = 'bg-secondary/10 text-secondary border-secondary/35';
-                      statusLabel = 'GOOD LEAD';
-                    } else if (lead.crm_status === 'SALE_DONE') {
-                      statusBadgeClass = 'bg-primary-container/10 text-primary border-primary-container/35';
-                      statusLabel = 'SALE COMPLETE';
-                    } else if (lead.crm_status === 'DID_NOT_CONNECT') {
-                      statusBadgeClass = 'bg-yellow-500/10 text-yellow-400 border-yellow-500/35';
-                      statusLabel = 'NO CONNECTION';
-                    } else if (lead.crm_status === 'BAD_LEAD') {
-                      statusBadgeClass = 'bg-error/10 text-error border-error-container/35';
-                      statusLabel = 'BAD LEAD';
-                    }
+              {/* Table Body */}
+              <div
+                style={{
+                  height: `${importedVirtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                  minWidth: '900px',
+                }}
+              >
+                {importedVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const lead = filteredImported[virtualRow.index];
+                  const isEven = virtualRow.index % 2 === 0;
 
-                    return (
-                      <tr
-                        key={virtualRow.key}
-                        data-index={virtualRow.index}
-                        ref={importedVirtualizer.measureElement}
-                        onClick={() => setSelectedLead(lead)}
-                        className={`group border-b border-outline-variant/10 transition-colors hover:bg-surface-variant/25 cursor-pointer ${
-                          isEven ? 'bg-surface-container-lowest/10' : 'bg-surface-container/15'
-                        }`}
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '64px',
-                          transform: `translateY(${virtualRow.start}px)`,
-                        }}
-                      >
-                        {/* Name and email */}
-                        <td className="px-6 py-2.5 w-[22%]">
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-on-surface text-sm truncate max-w-xs">{lead.name || 'Anonymous Lead'}</span>
-                            <span className="text-xs text-outline truncate max-w-xs">{lead.email || 'No email info'}</span>
+                  let statusBadgeClass = 'bg-surface-variant/40 text-on-surface-variant border-outline-variant/30';
+                  let statusLabel = lead.crm_status || 'NONE';
+                  if (lead.crm_status === 'GOOD_LEAD_FOLLOW_UP') {
+                    statusBadgeClass = 'bg-secondary/10 text-secondary border-secondary/35';
+                    statusLabel = 'GOOD LEAD';
+                  } else if (lead.crm_status === 'SALE_DONE') {
+                    statusBadgeClass = 'bg-primary-container/10 text-primary border-primary-container/35';
+                    statusLabel = 'SALE COMPLETE';
+                  } else if (lead.crm_status === 'DID_NOT_CONNECT') {
+                    statusBadgeClass = 'bg-yellow-500/10 text-yellow-400 border-yellow-500/35';
+                    statusLabel = 'NO CONNECTION';
+                  } else if (lead.crm_status === 'BAD_LEAD') {
+                    statusBadgeClass = 'bg-error/10 text-error border-error-container/35';
+                    statusLabel = 'BAD LEAD';
+                  }
+
+                  return (
+                    <div
+                      key={virtualRow.key}
+                      data-index={virtualRow.index}
+                      ref={importedVirtualizer.measureElement}
+                      onClick={() => setSelectedLead(lead)}
+                      className={`group border-b border-outline-variant/10 transition-colors hover:bg-surface-variant/25 cursor-pointer flex items-center h-16 ${
+                        isEven ? 'bg-surface-container-lowest/10' : 'bg-surface-container/15'
+                      }`}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      {/* Name and email */}
+                      <div className="px-6 w-[22%] flex-shrink-0 truncate">
+                        <div className="flex flex-col truncate">
+                          <span className="font-semibold text-on-surface text-sm truncate max-w-xs">{lead.name || 'Anonymous Lead'}</span>
+                          <span className="text-xs text-outline truncate max-w-xs">{lead.email || 'No email info'}</span>
+                        </div>
+                      </div>
+
+                      {/* Phone details */}
+                      <div className="px-6 w-[15%] flex-shrink-0 font-mono text-xs truncate">
+                        {lead.mobile_without_country_code ? (
+                          <div className="flex items-center gap-1 text-on-surface truncate">
+                            <span className="text-outline">{lead.country_code || ''}</span>
+                            <span>{lead.mobile_without_country_code}</span>
                           </div>
-                        </td>
+                        ) : (
+                          <span className="text-outline-variant/40 italic">None</span>
+                        )}
+                      </div>
 
-                        {/* Phone details */}
-                        <td className="px-6 py-2.5 w-[15%] font-mono text-xs">
-                          {lead.mobile_without_country_code ? (
-                            <div className="flex items-center gap-1 text-on-surface">
-                              <span className="text-outline">{lead.country_code || ''}</span>
-                              <span>{lead.mobile_without_country_code}</span>
-                            </div>
-                          ) : (
-                            <span className="text-outline-variant/40 italic">None</span>
-                          )}
-                        </td>
-
-                        {/* Location */}
-                        <td className="px-6 py-2.5 w-[13%]">
-                          {lead.city || lead.state || lead.country ? (
-                            <div className="flex flex-col text-xs">
-                              <span className="text-on-surface truncate max-w-[150px]">
-                                {lead.city}
-                                {lead.city && lead.state && ', '}
-                                {lead.state}
-                              </span>
-                              <span className="text-outline text-[10px] truncate max-w-[150px]">{lead.country}</span>
-                            </div>
-                          ) : (
-                            <span className="text-outline-variant/40 italic text-xs">Unspecified</span>
-                          )}
-                        </td>
-
-                        {/* CRM status and owner */}
-                        <td className="px-6 py-2.5 w-[18%]">
-                          <div className="flex flex-col items-start gap-1">
-                            <span className={`text-[10px] font-code-label font-bold border px-2 py-0.5 rounded-full ${statusBadgeClass}`}>
-                              {statusLabel}
+                      {/* Location */}
+                      <div className="px-6 w-[13%] flex-shrink-0 truncate">
+                        {lead.city || lead.state || lead.country ? (
+                          <div className="flex flex-col text-xs truncate">
+                            <span className="text-on-surface truncate max-w-[150px]">
+                              {lead.city}
+                              {lead.city && lead.state && ', '}
+                              {lead.state}
                             </span>
-                            {lead.lead_owner && (
-                              <span className="text-[10px] text-outline">Owner: {lead.lead_owner}</span>
-                            )}
+                            <span className="text-outline text-[10px] truncate max-w-[150px]">{lead.country}</span>
                           </div>
-                        </td>
+                        ) : (
+                          <span className="text-outline-variant/40 italic text-xs">Unspecified</span>
+                        )}
+                      </div>
 
-                        {/* Data Source */}
-                        <td className="px-6 py-2.5 w-[15%]">
-                          {lead.data_source ? (
-                            <span className="text-xs font-code-label bg-surface-variant/45 border border-outline-variant/15 px-2 py-1 rounded text-primary">
-                              {lead.data_source}
-                            </span>
-                          ) : (
-                            <span className="text-outline-variant/40 italic text-xs">Unknown</span>
+                      {/* CRM status and owner */}
+                      <div className="px-6 w-[18%] flex-shrink-0 truncate">
+                        <div className="flex flex-col items-start gap-1 truncate">
+                          <span className={`text-[10px] font-code-label font-bold border px-2 py-0.5 rounded-full truncate ${statusBadgeClass}`}>
+                            {statusLabel}
+                          </span>
+                          {lead.lead_owner && (
+                            <span className="text-[10px] text-outline truncate">Owner: {lead.lead_owner}</span>
                           )}
-                        </td>
+                        </div>
+                      </div>
 
-                        {/* Note/Description */}
-                        <td className="px-6 py-2.5 w-[17%] text-xs max-w-xs truncate" title={lead.crm_note || lead.description}>
-                          <span className="text-outline">{lead.crm_note || lead.description || ''}</span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      {/* Data Source */}
+                      <div className="px-6 w-[15%] flex-shrink-0 truncate">
+                        {lead.data_source ? (
+                          <span className="text-xs font-code-label bg-surface-variant/45 border border-outline-variant/15 px-2 py-1 rounded text-primary truncate">
+                            {lead.data_source}
+                          </span>
+                        ) : (
+                          <span className="text-outline-variant/40 italic text-xs">Unknown</span>
+                        )}
+                      </div>
+
+                      {/* Note/Description */}
+                      <div className="px-6 w-[17%] flex-shrink-0 text-xs truncate" title={lead.crm_note || lead.description}>
+                        <span className="text-outline truncate">{lead.crm_note || lead.description || ''}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )
         ) : (
@@ -408,69 +407,68 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
           ) : (
             <div
               ref={skippedParentRef}
-              className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md"
+              className="w-full max-h-[500px] overflow-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md text-sm text-on-surface-variant"
             >
-              <table className="w-full border-collapse text-left text-sm text-on-surface-variant table-fixed">
-                <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-error font-semibold text-xs tracking-wider uppercase">
-                  <tr>
-                    <th className="px-6 py-3.5 w-16 text-center bg-[#0c1328]">Row</th>
-                    <th className="px-6 py-3.5 bg-[#0c1328] w-72">Skip Reason</th>
-                    <th className="px-6 py-3.5 bg-[#0c1328]">Raw Record Details</th>
-                  </tr>
-                </thead>
-                <tbody
-                  style={{
-                    height: `${skippedVirtualizer.getTotalSize()}px`,
-                    width: '100%',
-                    position: 'relative',
-                  }}
-                >
-                  {skippedVirtualizer.getVirtualItems().map((virtualRow) => {
-                    const log = filteredSkipped[virtualRow.index];
-                    const isEven = virtualRow.index % 2 === 0;
+              {/* Header Row */}
+              <div className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-error font-semibold text-xs tracking-wider uppercase flex items-center min-w-[700px] h-12">
+                <div className="px-6 w-16 text-center flex-shrink-0">Row</div>
+                <div className="px-6 w-72 flex-shrink-0">Skip Reason</div>
+                <div className="px-6 flex-1 flex-shrink-0">Raw Record Details</div>
+              </div>
 
-                    return (
-                      <tr
-                        key={virtualRow.key}
-                        data-index={virtualRow.index}
-                        ref={skippedVirtualizer.measureElement}
-                        onClick={() => setSelectedSkipped(log)}
-                        className={`group border-b border-outline-variant/10 transition-colors hover:bg-surface-variant/25 cursor-pointer ${
-                          isEven ? 'bg-surface-container-lowest/10' : 'bg-surface-container/15'
-                        }`}
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '72px',
-                          transform: `translateY(${virtualRow.start}px)`,
-                        }}
-                      >
-                        {/* Row Index */}
-                        <td className="px-6 py-3 w-16 text-center font-code-label text-outline">
-                          {virtualRow.index + 1}
-                        </td>
+              {/* Table Body */}
+              <div
+                style={{
+                  height: `${skippedVirtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                  minWidth: '700px',
+                }}
+              >
+                {skippedVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const log = filteredSkipped[virtualRow.index];
+                  const isEven = virtualRow.index % 2 === 0;
 
-                        {/* Skip Reason Badge */}
-                        <td className="px-6 py-3 w-72">
-                          <div className="flex items-center gap-1.5 text-error font-medium">
-                            <span className="material-symbols-outlined text-lg">warning</span>
-                            <span className="text-sm truncate max-w-xs">{log.reason}</span>
-                          </div>
-                        </td>
+                  return (
+                    <div
+                      key={virtualRow.key}
+                      data-index={virtualRow.index}
+                      ref={skippedVirtualizer.measureElement}
+                      onClick={() => setSelectedSkipped(log)}
+                      className={`group border-b border-outline-variant/10 transition-colors hover:bg-surface-variant/25 cursor-pointer flex items-center h-[72px] ${
+                        isEven ? 'bg-surface-container-lowest/10' : 'bg-surface-container/15'
+                      }`}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      {/* Row Index */}
+                      <div className="px-6 w-16 text-center font-code-label text-outline flex-shrink-0">
+                        {virtualRow.index + 1}
+                      </div>
 
-                        {/* Raw Record Dump */}
-                        <td className="px-6 py-3">
-                          <div className="bg-black/35 rounded-lg border border-outline-variant/5 p-2 font-mono text-[10px] text-outline-variant max-h-12 overflow-y-auto overflow-x-hidden select-all whitespace-pre-wrap">
-                            {JSON.stringify(log.row)}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      {/* Skip Reason Badge */}
+                      <div className="px-6 w-72 flex-shrink-0 truncate">
+                        <div className="flex items-center gap-1.5 text-error font-medium truncate">
+                          <span className="material-symbols-outlined text-lg">warning</span>
+                          <span className="text-sm truncate max-w-xs">{log.reason}</span>
+                        </div>
+                      </div>
+
+                      {/* Raw Record Dump */}
+                      <div className="px-6 flex-1 flex-shrink-0 truncate">
+                        <div className="bg-black/35 rounded-lg border border-outline-variant/5 p-2 font-mono text-[10px] text-outline-variant max-h-12 overflow-y-auto overflow-x-hidden select-all whitespace-pre-wrap truncate">
+                          {JSON.stringify(log.row)}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )
         )}
