@@ -61,34 +61,29 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
       {/* Outer container with fixed height & horizontal scroll */}
       <div
         ref={parentRef}
-        className="w-full max-h-[420px] overflow-auto rounded-xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md"
+        className="w-full max-h-[420px] overflow-auto rounded-xl border border-outline-variant/20 bg-surface-container-low/40 backdrop-blur-md text-sm text-on-surface-variant"
       >
-        <table
-          className="border-collapse text-left text-sm text-on-surface-variant table-fixed"
-          style={{ width: `${totalWidth}px` }}
-        >
+        <div style={{ width: `${totalWidth}px` }}>
           {/* Sticky headers */}
-          <thead className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase">
-            <tr>
-              <th
-                className="px-4 py-3.5 text-center border-r border-outline-variant/10 bg-[#0c1328]"
-                style={{ width: `${indexColWidth}px` }}
+          <div className="sticky top-0 z-10 bg-[#0c1328] border-b border-outline-variant/30 text-primary font-semibold text-xs tracking-wider uppercase flex items-center h-12">
+            <div
+              className="px-4 text-center border-r border-outline-variant/10 bg-[#0c1328] flex-shrink-0 flex items-center justify-center h-full"
+              style={{ width: `${indexColWidth}px` }}
+            >
+              #
+            </div>
+            {headers.map((header, i) => (
+              <div
+                key={header}
+                className="px-6 font-semibold text-on-surface border-r border-outline-variant/10 whitespace-nowrap bg-[#0c1328] flex-shrink-0 flex items-center h-full"
+                style={{ width: `${columnWidths[i]}px` }}
               >
-                #
-              </th>
-              {headers.map((header, i) => (
-                <th
-                  key={header}
-                  className="px-6 py-3.5 font-semibold text-on-surface border-r border-outline-variant/10 whitespace-nowrap bg-[#0c1328]"
-                  style={{ width: `${columnWidths[i]}px` }}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
+                {header}
+              </div>
+            ))}
+          </div>
           
-          <tbody
+          <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
               width: '100%',
@@ -100,11 +95,11 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
               const isEven = virtualRow.index % 2 === 0;
 
               return (
-                <tr
+                <div
                   key={virtualRow.key}
                   data-index={virtualRow.index}
                   ref={rowVirtualizer.measureElement}
-                  className={`group transition-colors hover:bg-surface-variant/35 hover:text-on-surface ${
+                  className={`group transition-colors hover:bg-surface-variant/35 hover:text-on-surface flex items-center border-b border-outline-variant/10 h-12 ${
                     isEven ? 'bg-surface-container-lowest/15' : 'bg-surface-container/20'
                   }`}
                   style={{
@@ -116,28 +111,28 @@ export default function PreviewTable({ headers, rows, totalCount }: PreviewTable
                   }}
                 >
                   {/* Row index number */}
-                  <td
-                    className="px-4 py-3 text-center font-code-label border-r border-outline-variant/10 text-outline border-b border-outline-variant/10 bg-[#060e20]/20"
+                  <div
+                    className="px-4 text-center font-code-label border-r border-outline-variant/10 text-outline bg-[#060e20]/20 flex-shrink-0 flex items-center justify-center h-full"
                     style={{ width: `${indexColWidth}px` }}
                   >
                     {virtualRow.index + 1}
-                  </td>
+                  </div>
                   {/* Row cells */}
                   {headers.map((header, i) => (
-                    <td
+                    <div
                       key={header}
-                      className="px-6 py-3 border-r border-outline-variant/10 border-b border-outline-variant/10 truncate whitespace-nowrap"
+                      className="px-6 border-r border-outline-variant/10 flex-shrink-0 flex items-center h-full truncate whitespace-nowrap"
                       style={{ width: `${columnWidths[i]}px` }}
                       title={row[header] || ''}
                     >
-                      {row[header] || <span className="text-outline-variant/40 italic">empty</span>}
-                    </td>
+                      <span className="truncate">{row[header] || <span className="text-outline-variant/40 italic">empty</span>}</span>
+                    </div>
                   ))}
-                </tr>
+                </div>
               );
             })}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   );
