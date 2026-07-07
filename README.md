@@ -9,7 +9,8 @@ GrowEasy Smart Importer is a full-stack Next.js web application that takes messy
 This application is built as a single deployable **Next.js App Router Monolith** with TypeScript:
 - **Frontend**: Next.js (Client Components), Tailwind CSS, Framer Motion, Three.js, Lucide Icons, and `@tanstack/react-virtual` (for scroll virtualization).
 - **Backend Route Handlers**: Next.js API Routes (`src/app/api/import/`) for file ingestion, validation guards, and streaming job status.
-- **AI Integration**: Provider-agnostic LLM interface supporting Google Gemini (`gemini-1.5-flash` default) or OpenAI (`gpt-4o-mini`).
+- **AI Integration**: Provider-agnostic LLM interface supporting Google Gemini (`gemini-1.5-flash` default) or OpenAI (`gpt-4o-mini`). Includes **direct fetch REST calls** to bypass SDK authentication constraints and natively support new **AQ. Quickstart API Keys**.
+- **Serverless Backgrounding**: Uses Vercel's `@vercel/functions` `waitUntil()` call to keep background jobs processing on serverless platform limits without container freezing.
 - **Validation**: Zod schema contract parsing.
 - **Job Store**: In-memory job repository supporting concurrency caps and real-time polling endpoints.
 
@@ -84,8 +85,8 @@ After the LLM returns mapped records, the backend runs each record through a det
 
 ## 🚀 Setup & Execution Guide
 
-### Environment Variables
-Configure your credentials in a `.env` file at the root:
+### 1. Environment Variables
+Configure your credentials in a `.env` file at the root of the project:
 ```env
 AI_PROVIDER=gemini
 GEMINI_API_KEY=your_gemini_api_key_here
@@ -96,9 +97,11 @@ GEMINI_MODEL=gemini-1.5-flash
 # OPENAI_API_KEY=your_openai_api_key_here
 # OPENAI_MODEL=gpt-4o-mini
 ```
-Refer to [.env.example](file:///c:/Resume/Job%20Hunt/New%20Assignment/.env.example) for details.
 
-### Local Development
+> [!NOTE]
+> **Gemini API Key support:** Both standard Google Gemini keys (`AIzaSy...`) and Google AI Studio Quickstart keys (`AQ.Ab8RN...`) are fully supported. The backend trims whitespace and bypasses standard SDK prefix checks by making direct query-parameter REST requests to prevent 401 unauthenticated errors.
+
+### 2. Local Development
 1. Install dependencies:
    ```bash
    npm install
@@ -113,7 +116,16 @@ Refer to [.env.example](file:///c:/Resume/Job%20Hunt/New%20Assignment/.env.examp
    npm run test
    ```
 
-### Running with Docker
+### 3. Testing with sample data
+A pre-formatted sample file named `test_leads.csv` is located in the root directory. You can upload it to test the full mapping, validation, duplicate matching, and error tracking:
+- **Alice Smith**: Standard valid lead (success).
+- **Bob Jones**: Contains email but no phone (success, validating conditional presence).
+- **Charlie Brown**: Contains phone but no email (success, validating conditional presence).
+- **Alice Smith (Duplicate)**: Duplicate contact details (moves to Skipped Log).
+- **David Miller**: Missing both email and phone (fails Zod validation, moves to Skipped Log).
+- **Emma Watson**: Messy phone format `(555) 012-3456` (sanitizes to `5550123456` digits).
+
+### 4. Running with Docker
 1. Build and run via Docker Compose:
    ```bash
    docker-compose up --build
@@ -124,7 +136,7 @@ Refer to [.env.example](file:///c:/Resume/Job%20Hunt/New%20Assignment/.env.examp
 
 ## 💡 Key UX & Motion Differentiators
 1. **3D Funnel Dropzone**: A responsive canvas particle funnel using Three.js. Particles speed up and contract on file drag-over or active mapping.
-2. **Conveyor Belt Animation**: Renders batch tokens sliding along a track, scanning under a laser line, and sorting into success or skip buckets in real-time.
+2. **Conveyor Belt Animation**: Renders batch tokens sliding along a track. The scanning laser line sweep is anchored directly inside the active card to prevent overlap shifts.
 3. **⌘K Command Palette**: Press `Ctrl+K` or `Cmd+K` to open a command overlay to instantly inject mock data templates (Facebook Lead Ads, Messy sheets, Real-estate entries).
 4. **TanStack Scroll Virtualization**: Handles up to 10k rows smoothly without lag on the preview or results dashboards.
 
