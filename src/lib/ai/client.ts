@@ -150,20 +150,37 @@ export async function callAIModel(prompt: string, systemInstruction: string): Pr
         throw new Error('GEMINI_API_KEY is not defined in environment variables');
       }
       
-      const genAI = new GoogleGenerativeAI(geminiApiKey);
       const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiApiKey}`;
       
-      const model = genAI.getGenerativeModel({
-        model: modelName,
-        generationConfig: {
-          responseMimeType: 'application/json',
-          temperature: 0.1,
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        systemInstruction: systemInstruction,
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: prompt }]
+            }
+          ],
+          systemInstruction: {
+            parts: [{ text: systemInstruction }]
+          },
+          generationConfig: {
+            responseMimeType: 'application/json',
+            temperature: 0.1,
+          }
+        })
       });
 
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Gemini API returned status ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+      const text = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
       const cleaned = cleanJsonResponse(text);
       return JSON.parse(cleaned) as AIResponse;
     }
