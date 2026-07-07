@@ -196,34 +196,42 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
 
       {/* 2. Statistical Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden">
-          <span className="text-xs font-code-label text-outline uppercase tracking-wider">Total Evaluated</span>
-          <span className="text-4xl font-extrabold text-on-surface mt-2">{totalLeads}</span>
-          <div className="absolute right-4 bottom-4 w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center border border-primary/10">
+        <div className="glass-panel p-6 rounded-2xl flex items-center justify-between relative overflow-hidden">
+          <div className="flex flex-col">
+            <span className="text-xs font-code-label text-outline uppercase tracking-wider">Total Evaluated</span>
+            <span className="text-4xl font-extrabold text-on-surface mt-2">{totalLeads}</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center border border-primary/10 flex-shrink-0">
             <span className="material-symbols-outlined text-primary">assessment</span>
           </div>
         </div>
 
-        <div className="glass-panel p-6 rounded-2xl flex flex-col border-secondary/20 bg-secondary-container/5 relative overflow-hidden">
-          <span className="text-xs font-code-label text-secondary uppercase tracking-wider">Successfully Mapped</span>
-          <span className="text-4xl font-extrabold text-secondary mt-2">{imported.length}</span>
-          <div className="absolute right-4 bottom-4 w-12 h-12 rounded-xl bg-secondary/5 flex items-center justify-center border border-secondary/10">
+        <div className="glass-panel p-6 rounded-2xl flex items-center justify-between border-secondary/20 bg-secondary-container/5 relative overflow-hidden">
+          <div className="flex flex-col">
+            <span className="text-xs font-code-label text-secondary uppercase tracking-wider">Successfully Mapped</span>
+            <span className="text-4xl font-extrabold text-secondary mt-2">{imported.length}</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-secondary/5 flex items-center justify-center border border-secondary/10 flex-shrink-0">
             <span className="material-symbols-outlined text-secondary">check_circle</span>
           </div>
         </div>
 
-        <div className="glass-panel p-6 rounded-2xl flex flex-col border-error/20 bg-error-container/5 relative overflow-hidden">
-          <span className="text-xs font-code-label text-error uppercase tracking-wider">Skipped Rows</span>
-          <span className="text-4xl font-extrabold text-error mt-2">{skipped.length}</span>
-          <div className="absolute right-4 bottom-4 w-12 h-12 rounded-xl bg-error/5 flex items-center justify-center border border-error/10">
+        <div className="glass-panel p-6 rounded-2xl flex items-center justify-between border-error/20 bg-error-container/5 relative overflow-hidden">
+          <div className="flex flex-col">
+            <span className="text-xs font-code-label text-error uppercase tracking-wider">Skipped Rows</span>
+            <span className="text-4xl font-extrabold text-error mt-2">{skipped.length}</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-error/5 flex items-center justify-center border border-error/10 flex-shrink-0">
             <span className="material-symbols-outlined text-error">cancel</span>
           </div>
         </div>
 
-        <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden">
-          <span className="text-xs font-code-label text-tertiary uppercase tracking-wider">Extract Accuracy</span>
-          <span className="text-4xl font-extrabold text-tertiary mt-2">{accuracyRate}%</span>
-          <div className="absolute right-4 bottom-4 w-12 h-12 rounded-xl bg-tertiary/5 flex items-center justify-center border border-tertiary/10">
+        <div className="glass-panel p-6 rounded-2xl flex items-center justify-between relative overflow-hidden">
+          <div className="flex flex-col">
+            <span className="text-xs font-code-label text-tertiary uppercase tracking-wider">Extract Accuracy</span>
+            <span className="text-4xl font-extrabold text-tertiary mt-2">{accuracyRate}%</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-tertiary/5 flex items-center justify-center border border-tertiary/10 flex-shrink-0">
             <span className="material-symbols-outlined text-tertiary">auto_awesome</span>
           </div>
         </div>
@@ -238,7 +246,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
               setActiveTab('imported');
               setSearchQuery('');
             }}
-            className={`flex-1 md:flex-initial px-6 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 md:flex-initial px-6 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'imported'
                 ? 'bg-[#101931] text-secondary border border-outline-variant/20 shadow-md'
                 : 'text-on-surface-variant hover:text-on-surface'
@@ -252,7 +260,7 @@ export default function ResultsDashboard({ imported, skipped, onReset }: Results
               setActiveTab('skipped');
               setSearchQuery('');
             }}
-            className={`flex-1 md:flex-initial px-6 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 md:flex-initial px-6 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'skipped'
                 ? 'bg-[#101931] text-error border border-outline-variant/20 shadow-md'
                 : 'text-on-surface-variant hover:text-on-surface'
