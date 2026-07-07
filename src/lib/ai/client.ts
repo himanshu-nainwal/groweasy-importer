@@ -23,8 +23,8 @@ export function cleanJsonResponse(text: string): string {
 
 export async function callAIModel(prompt: string, systemInstruction: string): Promise<AIResponse> {
   const provider = process.env.AI_PROVIDER || 'gemini';
-  const openAIApiKey = process.env.OPENAI_API_KEY;
-  const geminiApiKey = process.env.GEMINI_API_KEY;
+  const openAIApiKey = process.env.OPENAI_API_KEY?.trim();
+  const geminiApiKey = process.env.GEMINI_API_KEY?.trim();
 
   // Fallback to Simulated AI Mapping Mode if API keys are missing
   if ((provider === 'openai' && !openAIApiKey) || (provider === 'gemini' && !geminiApiKey)) {

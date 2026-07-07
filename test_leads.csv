@@ -1,0 +1,7 @@
+Client Name,mail_id,Contact No,Country,Org Name,Status,Source,Comments
+Alice Smith,alice@example.com,+919876543210,India,ACME Corp,Good Lead,leads_on_demand,Interested in follow up
+Bob Jones,bob@example.com,,United States,Jones Ventures,,meridian_tower,Email contact only
+Charlie Brown,,+1 555-0199,Canada,,Sale Completed,eden_park,Phone contact only
+Alice Smith,alice@example.com,+919876543210,India,ACME Corp,,leads_on_demand,Duplicate entry
+David Miller,,,United Kingdom,Miller Ltd,Bad Lead,,Missing contact info
+Emma Watson,emma@example.com,(555) 012-3456,Australia,Watson Media,Did Not Connect,sarjapur_plots,Sanitized phone test
