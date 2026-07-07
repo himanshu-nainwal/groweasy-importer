@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jobStore } from '@/lib/jobStore';
 import { processImportJob } from '@/lib/ai/batchProcessor';
+import { waitUntil } from '@vercel/functions';
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,11 +21,13 @@ export async function POST(req: NextRequest) {
     // Create the job record in the global store
     jobStore.createJob(jobId, rows.length);
 
-    // Run the processor in the background without awaiting it to return immediately
-    processImportJob(jobId, rows, batchSize).catch((err) => {
-      console.error(`Background job processor crashed for jobId ${jobId}:`, err);
-      jobStore.failJob(jobId, err.message || 'Background execution failed');
-    });
+    // Run the processor in the background with Next.js waitUntil() to keep the container alive in serverless environment
+    waitUntil(
+      processImportJob(jobId, rows, batchSize).catch((err) => {
+        console.error(`Background job processor crashed for jobId ${jobId}:`, err);
+        jobStore.failJob(jobId, err.message || 'Background execution failed');
+      })
+    );
 
     return NextResponse.json({ jobId }, { status: 202 });
   } catch (err: any) {

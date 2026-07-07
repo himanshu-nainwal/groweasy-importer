@@ -97,16 +97,32 @@ export default function ConveyorBelt({
                 }`}
               >
                 {batch.state === 'active' && (
-                  <motion.div
-                    className="absolute -inset-0.5 rounded-lg bg-secondary/20 blur-sm -z-10"
-                    animate={{ opacity: [0.5, 0.9, 0.5] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  />
+                  <>
+                    <motion.div
+                      className="absolute -inset-0.5 rounded-lg bg-secondary/20 blur-sm -z-10"
+                      animate={{ opacity: [0.5, 0.9, 0.5] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                    <div className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none">
+                      <motion.div
+                        className="w-full h-[2px] bg-secondary/80 shadow-[0_0_8px_#4edea3]"
+                        animate={{ top: ['0%', '100%', '0%'] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                        style={{ position: 'absolute', left: 0 }}
+                      />
+                    </div>
+                  </>
                 )}
                 <span className="text-[10px] font-code-label uppercase text-on-surface-variant">Batch</span>
                 <span className={`text-sm font-bold ${batch.state === 'active' ? 'text-secondary' : 'text-primary'}`}>
                   #{batch.id}
                 </span>
+
+                {batch.state === 'active' && (
+                  <span className="text-[8px] font-bold text-secondary uppercase tracking-widest mt-1 animate-pulse">
+                    Scanning
+                  </span>
+                )}
 
                 {batch.state === 'active' && (
                   <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5">
@@ -119,14 +135,6 @@ export default function ConveyorBelt({
               </motion.div>
             ))}
           </AnimatePresence>
-
-          {/* Central AI Scan Overlay Portal */}
-          <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-28 border-x border-secondary/25 bg-secondary/5 pointer-events-none z-10">
-            <div className="absolute inset-x-0 h-0.5 bg-secondary/70 animate-bounce top-0" style={{ animationDuration: '3s' }} />
-            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[8px] font-code-label text-secondary uppercase bg-black/60 px-1.5 py-0.5 rounded border border-secondary/20">
-              AI SCANNER
-            </div>
-          </div>
         </div>
 
         {/* 3. Output bins (Right) */}
